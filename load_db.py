@@ -223,16 +223,6 @@ def load_db_test():
                 upper = float(splitted[4]) - y_half
                 lower = float(splitted[4]) + y_half
                 
-                """
-                if x_half < etc.face_minimum/2 or y_half < etc.face_minimum/2:
-                    test_face_num[-1] -=1
-                    face_num -= 1
-                    if face_num == 0:
-                        test_annot_line = [elem for elem in test_annot_line if type(elem) != int]
-                        test_annot.append(test_annot_line)
-                        stage = 0
-                    continue
-                """
 
                 test_annot_line[test_face_num[-1] - face_num] = [left, upper, right, lower]
 

@@ -17,31 +17,6 @@ sess = tf.InteractiveSession()
 
 #######detection-net
 
-"""
-#12-net
-#conv layer 1
-x_12 = tf.placeholder("float")
-W_conv1_12 = etc.weight_variable([3,3,etc.input_channel,16])
-b_conv1_12 = etc.bias_variable([16])
-h_conv1_12 = tf.nn.relu(etc.conv2d(x_12, W_conv1_12) + b_conv1_12)
-
-#pooling layer 1
-h_pool1_12 = etc.max_pool_3x3(h_conv1_12)
-
-#fully layer 1
-W_fc1_12 = etc.weight_variable([6 * 6 * 16, 16])
-W_fc1_12_ = tf.reshape(W_fc1_12, (6,6,16,16))
-b_fc1_12 = etc.bias_variable([16])
-h_fc1_12 = tf.nn.relu(etc.conv2d(h_pool1_12, W_fc1_12_) + b_fc1_12)
-
-#fully layer2
-W_fc2_12 = etc.weight_variable([16, 1])
-W_fc2_12_ = tf.reshape(W_fc2_12, (1,1,16,1))
-b_fc2_12 = etc.bias_variable([1])
-h_fc2_12 = tf.nn.sigmoid(etc.conv2d(h_fc1_12, W_fc2_12_) + b_fc2_12)
-h_fc2_12 = tf.reshape(h_fc2_12, [-1])
-"""
-
 #12-net
 #conv layer 1
 x_12 = tf.placeholder("float", [None, etc.img_size_12 * etc.img_size_12 * etc.input_channel])
@@ -286,28 +261,6 @@ for tid,img_dir in enumerate(test_img):
             img_col -= 1
             X = X[:,:img_col]
         
-        """
-        feature_row = img_row/2
-        feature_col = img_col/2
-        
-        result = h_fc2_12.eval(feed_dict = {x_12:np.reshape(X, (1, img_row, img_col, etc.input_channel))})
-        result_id = np.where(result > thr_12)[0]
-          
-        detected_list_scale = np.zeros((len(result_id),5),np.float32)
-        
-        detected_list_scale[:,0] = (result_id%feature_col) * 2
-        detected_list_scale[:,1] = (result_id/feature_col) * 2
-        detected_list_scale[:,2] = detected_list_scale[:,0] + etc.img_size_12
-        detected_list_scale[:,3] = detected_list_scale[:,1] + etc.img_size_12
-       
-        detected_list_scale *= float(etc.face_minimum)/float(etc.img_size_12)
-        detected_list_scale *= etc.downscale ** scale
-        detected_list_scale[:,4] = result[result_id]
- 
-        detected_list_scale = detected_list_scale.tolist()
-
-        detected_list_scale = [elem + [img.crop((int(elem[0]),int(elem[1]),int(elem[2]),int(elem[3]))), scale, False] for id_,elem in enumerate(detected_list_scale) if result_id[id_]%feature_col+ etc.img_size_12/2 <= feature_col and result_id[id_]/feature_col + etc.img_size_12/2 <= feature_row and result_id[id_]%feature_col%2 == 0 and result_id[id_]/feature_col%2 == 0]
-        """ 
         windows = view_as_windows(X, (etc.img_size_12,etc.img_size_12,etc.input_channel),4)
         feature_col = np.shape(windows)[1]
         feature_row = np.shape(windows)[0]
