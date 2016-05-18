@@ -13,11 +13,11 @@ used AFLW dataset for training and  FDDB dataset for testing
 ![3](https://cloud.githubusercontent.com/assets/13601723/15348777/513f09fe-1d08-11e6-8cf2-751ea470aecd.png)
 ![1](https://cloud.githubusercontent.com/assets/13601723/15348745/24f5f362-1d08-11e6-957d-e41718122426.png)
 
-![9](https://cloud.githubusercontent.com/assets/13601723/15348771/50f0e6e8-1d08-11e6-99af-c26a3428bbe2.png)
+
 ![8](https://cloud.githubusercontent.com/assets/13601723/15348772/5118bb3c-1d08-11e6-8274-be075da97d6f.png)
 ![7](https://cloud.githubusercontent.com/assets/13601723/15348773/512d4002-1d08-11e6-87be-2ac486923a07.png)
 ![6](https://cloud.githubusercontent.com/assets/13601723/15348774/512fb3be-1d08-11e6-9c77-d7a445d94f7e.png)
 
 ![4](https://cloud.githubusercontent.com/assets/13601723/15348776/513dc3d2-1d08-11e6-804f-37fd3299bf74.png)
-
+![9](https://cloud.githubusercontent.com/assets/13601723/15348771/50f0e6e8-1d08-11e6-99af-c26a3428bbe2.png)
 
