@@ -6,7 +6,7 @@ implemented with TensorFlow and yields similar result with paper
 used AFLW dataset for training and  FDDB dataset for testing
 
 
-![face](https://cloud.githubusercontent.com/assets/13601723/15348812/7a3c4196-1d08-11e6-9f1a-c5fea6cbdce1.png =250x250)
+![face](https://cloud.githubusercontent.com/assets/13601723/15348812/7a3c4196-1d08-11e6-9f1a-c5fea6cbdce1.png =100x20)
 
 
 ![1](https://cloud.githubusercontent.com/assets/13601723/15348745/24f5f362-1d08-11e6-957d-e41718122426.png)
