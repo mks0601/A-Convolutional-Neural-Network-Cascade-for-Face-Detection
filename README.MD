@@ -8,8 +8,7 @@ used AFLW dataset for training and  FDDB dataset for testing
 ##Final performance
 ![face](https://cloud.githubusercontent.com/assets/13601723/15349050/a8192776-1d0a-11e6-86be-243175c22ba4.png)
 
-##Qualitative results
-##Green ones are GT and blue ones are detected face
+##Qualitative results(Green ones are GT and blue ones are detected face)
 ![2](https://cloud.githubusercontent.com/assets/13601723/15348767/4d1d0768-1d08-11e6-99d9-07785c131c4b.png)
 ![5](https://cloud.githubusercontent.com/assets/13601723/15348775/5137c464-1d08-11e6-85d8-f4323ce7cf4b.png)
 ![3](https://cloud.githubusercontent.com/assets/13601723/15348777/513f09fe-1d08-11e6-8cf2-751ea470aecd.png)
