@@ -238,61 +238,9 @@ for tid,img_dir in enumerate(test_img):
         img[:,:,1] = arr
         img[:,:,2] = arr
         img = Image.fromarray(img)
-
-    pyramid = tuple(pyramid_gaussian(img, downscale = etc.downscale))
-    detected_list = [0 for _ in xrange(len(pyramid))]
-    for scale in xrange(etc.pyramid_num):
-        X = pyramid[scale]
-
-
-        resized = Image.fromarray(np.uint8(X*255)).resize((int(np.shape(X)[1] * float(etc.img_size_12)/float(etc.face_minimum)), int(np.shape(X)[0]*float(etc.img_size_12)/float(etc.face_minimum))))
-        X = np.asarray(resized).astype(np.float32)/255
-
-        img_row = np.shape(X)[0]
-        img_col = np.shape(X)[1]
-        
-        if img_row < etc.img_size_12 or img_col < etc.img_size_12:
-            break
-
-        if img_row%2 == 1:
-            img_row -= 1
-            X = X[:img_row,:]
-        if img_col%2 == 1:
-            img_col -= 1
-            X = X[:,:img_col]
-        
-        windows = view_as_windows(X, (etc.img_size_12,etc.img_size_12,etc.input_channel),4)
-        feature_col = np.shape(windows)[1]
-        feature_row = np.shape(windows)[0]
-        result = h_fc2_12.eval(feed_dict={x_12:np.reshape(windows,(-1,etc.img_size_12*etc.img_size_12*etc.input_channel))})
-
-        result_id = np.where(result > thr_12)[0]
-        
-        detected_list_scale = np.zeros((len(result_id),5),np.float32)
-        
-        detected_list_scale[:,0] = (result_id%feature_col)*4
-        detected_list_scale[:,1] = (result_id/feature_col)*4
-        detected_list_scale[:,2] = detected_list_scale[:,0] + etc.img_size_12 - 1
-        detected_list_scale[:,3] = detected_list_scale[:,1] + etc.img_size_12 - 1
-
-        detected_list_scale[:,0] = detected_list_scale[:,0] / img_col * img.size[0]
-        detected_list_scale[:,1] = detected_list_scale[:,1] / img_row * img.size[1]
-        detected_list_scale[:,2] = detected_list_scale[:,2] / img_col * img.size[0]
-        detected_list_scale[:,3] = detected_list_scale[:,3] / img_row * img.size[1]
-        detected_list_scale[:,4] = np.reshape(result[result_id], (-1))
-
-        detected_list_scale = detected_list_scale.tolist()
-        
-        detected_list_scale = [elem + [img.crop((int(elem[0]),int(elem[1]),int(elem[2]),int(elem[3]))), scale, False] for id_,elem in enumerate(detected_list_scale)]
-        
-      
-
-        if len(detected_list_scale) > 0:
-            detected_list[scale] = detected_list_scale
-
-    detected_list = [elem for elem in detected_list if type(elem) != int]
-    result_box = [detected_list[i][j] for i in xrange(len(detected_list)) for j in xrange(len(detected_list[i]))]
     
+    #12-net
+    result_box = etc.slidingW_Test(img,thr_12,x_12,h_fc2_12) 
 
     if len(result_box) > 0:
         

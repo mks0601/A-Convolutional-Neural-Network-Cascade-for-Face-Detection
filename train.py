@@ -279,6 +279,8 @@ for cascade_lv in xrange(1,etc.cascade_level):
             epoch_finish = time.time()
             average_loss /= etc.batch_iter
             
+
+            #test each epoch
             pos_id = random.sample(xrange(len(pos_db)),etc.acc_bench_num)
             neg_id = random.sample(xrange(len(neg_db)),etc.acc_bench_num)
 
@@ -375,53 +377,12 @@ for cascade_lv in xrange(1,etc.cascade_level):
     neg_db_num = 0 
     for nid, img in enumerate(neg_img):
         print "cas_lv ", cascade_lv, " ", nid+1,"/",len(neg_img), "th image...", "neg_db size: ", neg_db_num, "thr_12: ", thr_12, "thr_24: ", thr_24
-        pyramid = tuple(pyramid_gaussian(img, downscale = etc.downscale))
-        neg_db_for_scale = [0 for _ in xrange(len(pyramid))]
-        for scale in xrange(len(pyramid)): 
-            
-            X = pyramid[scale]
-            img_row = np.shape(X)[0]
-            img_col = np.shape(X)[1]
-            
-            if img_row < etc.img_size_12 or img_col < etc.img_size_12:
-                break
-            if etc.img_size_12 * (etc.downscale ** scale) < etc.face_minimum:
-                continue
-            
-            win_list = view_as_windows(X, (etc.img_size_12, etc.img_size_12, etc.input_channel), etc.window_stride) 
-            win_col = np.shape(win_list)[1]
-            win_list = np.reshape(win_list, (-1, etc.input_channel * etc.img_size_12 * etc.img_size_12))
-            result = h_fc2_12.eval(feed_dict={x_12:win_list})
-            result_id = np.where(result > thr_12)[0]
-            
-            detected_box = [0 for _ in xrange(len(result_id))]
-            for id_, rid in enumerate(result_id):
-                lt_x = (rid % win_col) * etc.window_stride
-                lt_y = (rid / win_col) * etc.window_stride
-                rb_x = lt_x + etc.img_size_12
-                rb_y = lt_y + etc.img_size_12
-
-                lt_x *= etc.downscale ** scale
-                lt_y *= etc.downscale ** scale
-                rb_x *= etc.downscale ** scale
-                rb_y *= etc.downscale ** scale
-                
-                lt_x = int(lt_x)
-                lt_y = int(lt_y)
-                rb_x = int(rb_x)
-                rb_y = int(rb_y)
-                
-
-                original_img = img.crop((lt_x,lt_y,rb_x,rb_y))
-                detected_box[id_] = [lt_x,lt_y,rb_x,rb_y,result[rid],original_img,scale]
-                
-
-            detected_box = [elem for elem in detected_box if type(elem) != int]
-            neg_db_for_scale[scale] = detected_box
-
-        neg_db_for_scale = [elem for elem in neg_db_for_scale if type(elem) != int]
-        result_box = [neg_db_for_scale[i][j] for i in xrange(len(neg_db_for_scale)) for j in xrange(len(neg_db_for_scale[i]))]
         
+        #12-net
+        result_box = etc.slidingW_Test(img,thr_12,x_12,h_fc2_12)
+
+
+        #12-calib
         if len(result_box) > 0:
             neg_db_tmp = np.zeros((len(result_box),etc.dim_12),np.float32)
             for id_,box in enumerate(result_box):
@@ -431,14 +392,6 @@ for cascade_lv in xrange(1,etc.cascade_level):
             result = h_fc2_12_cali.eval(feed_dict={x_12_cali: neg_db_tmp})
             result_box = etc.calib_run(result_box,result,img) 
                 
-            #12-net again to update confidence
-            test_db_12 = np.zeros((len(result_box),etc.dim_12),np.float32)
-            for id_,box in enumerate(result_box):
-                resized_img_12 = etc.img2array(box[5],etc.img_size_12)
-                test_db_12[id_,:] = resized_img_12
-            result = h_fc2_12.eval(feed_dict={x_12:test_db_12})
-            for bid,box in enumerate(result_box):
-                box[4] = result[bid]
 
             #NMS for each scale
             scale_cur = 0
@@ -497,21 +450,6 @@ for cascade_lv in xrange(1,etc.cascade_level):
                     result = h_fc2_24_cali.eval(feed_dict={x_24_cali: test_db_24})
                     result_box = etc.calib_run(result_box,result,img)
                     
-                    #24-net again to update confidence
-                    test_db_12 = np.zeros((len(result_box),etc.dim_12),np.float32)
-                    test_db_24 = np.zeros((len(result_box),etc.dim_24),np.float32)
-                    for id_,box in enumerate(result_box):
-                        original_patch = box[5]
-                        resized_img_12 = etc.img2array(original_patch,etc.img_size_12)
-                        resized_img_24 = etc.img2array(original_patch,etc.img_size_24)
-
-                        test_db_12[id_,:] = resized_img_12
-                        test_db_24[id_,:] = resized_img_24
-                    FROM_12 = h_fc1_12.eval(feed_dict={x_12:test_db_12})
-                    result = h_fc2_24.eval(feed_dict={from_12:FROM_12,x_24:test_db_24})
-                    for bid,box in enumerate(result_box):
-                        box[4] = result[bid]
-
                     #NMS for each scale
                     scale_cur = 0
                     scale_box = []

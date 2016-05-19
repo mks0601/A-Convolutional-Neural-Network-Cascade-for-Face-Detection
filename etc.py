@@ -2,6 +2,8 @@ import math
 import tensorflow as tf
 import numpy as np
 import Image
+from skimage.util.shape import view_as_windows
+from skimage.transform import pyramid_gaussian
 
 #dir
 db_dir = "/media/sda1/Study/Data/FDDB/"
@@ -120,53 +122,6 @@ def max_pool_3x3(x):
                           strides=[1, 2, 2, 1], padding='SAME')
 
 
-
-def NMS_helper(lid, detected_list, is_supp):
-    
-    for i in range(lid+1,len(detected_list)):
-        if is_supp[i] == 0:
-            left = max([detected_list[lid][0], detected_list[i][0]])
-            right = min([detected_list[lid][2], detected_list[i][2]])
-            upper = max([detected_list[lid][1], detected_list[i][1]])
-            lower = min([detected_list[lid][3], detected_list[i][3]])
-
-            inter_area = (right-left) * (lower-upper)
-            union_area = (detected_list[lid][2] - detected_list[lid][0]) * (detected_list[lid][3] - detected_list[lid][1])
-            union_area += (detected_list[i][2] - detected_list[i][0]) * (detected_list[i][3] - detected_list[i][1])
-            union_area -= inter_area
-            
-            if left >= right or upper >= lower or inter_area <= 0 or union_area <= 0:
-                continue
-            overlap = float(inter_area) / float(union_area)
-            if overlap < 1 and overlap >= 0.5:  # or inter_area >= 0.9*(detected_list[lid][2]-detected_list[lid][0])*(detected_list[lid][3]-detected_list[lid][1]):
-                is_supp[i] = 1
-    
-    return lid, is_supp
-
-def NMS(detected_list):
-    
-    is_supp = np.zeros(len(detected_list))
-    result = []
-    for i in range(len(detected_list)):
-        if is_supp[i] == 0:
-            is_supp[i] = 1
-            lid, is_supp = NMS_helper(i, detected_list, is_supp)
-            result.append(lid)
-    return result
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def NMS_fast(detected_list):
 
     if len(detected_list) == 0:
@@ -199,3 +154,61 @@ def NMS_fast(detected_list):
         idxs = np.delete(idxs, np.concatenate(([0],np.where(((overlap >= 0.5) & (overlap < 1)) |(included > 0.9)  )[0]+1)))
     
     return pick
+
+def slidingW_Test(img, thr_12, x_12, h_fc2_12):
+
+    pyramid = tuple(pyramid_gaussian(img, downscale = downscale))
+    detected_list = [0 for _ in xrange(len(pyramid))]
+    for scale in xrange(pyramid_num):
+        X = pyramid[scale]
+
+
+        resized = Image.fromarray(np.uint8(X*255)).resize((int(np.shape(X)[1] * float(img_size_12)/float(face_minimum)), int(np.shape(X)[0]*float(img_size_12)/float(face_minimum))))
+        X = np.asarray(resized).astype(np.float32)/255
+
+        img_row = np.shape(X)[0]
+        img_col = np.shape(X)[1]
+        
+        if img_row < img_size_12 or img_col < img_size_12:
+            break
+
+        if img_row%2 == 1:
+            img_row -= 1
+            X = X[:img_row,:]
+        if img_col%2 == 1:
+            img_col -= 1
+            X = X[:,:img_col]
+        
+        windows = view_as_windows(X, (img_size_12,img_size_12,input_channel),4)
+        feature_col = np.shape(windows)[1]
+        result = h_fc2_12.eval(feed_dict={x_12:np.reshape(windows,(-1,img_size_12*img_size_12*input_channel))})
+
+        result_id = np.where(result > thr_12)[0]
+        
+        detected_list_scale = np.zeros((len(result_id),5),np.float32)
+        
+        detected_list_scale[:,0] = (result_id%feature_col)*4
+        detected_list_scale[:,1] = (result_id/feature_col)*4
+        detected_list_scale[:,2] = detected_list_scale[:,0] + img_size_12 - 1
+        detected_list_scale[:,3] = detected_list_scale[:,1] + img_size_12 - 1
+
+        detected_list_scale[:,0] = detected_list_scale[:,0] / img_col * img.size[0]
+        detected_list_scale[:,1] = detected_list_scale[:,1] / img_row * img.size[1]
+        detected_list_scale[:,2] = detected_list_scale[:,2] / img_col * img.size[0]
+        detected_list_scale[:,3] = detected_list_scale[:,3] / img_row * img.size[1]
+        detected_list_scale[:,4] = np.reshape(result[result_id], (-1))
+
+        detected_list_scale = detected_list_scale.tolist()
+        
+        detected_list_scale = [elem + [img.crop((int(elem[0]),int(elem[1]),int(elem[2]),int(elem[3]))), scale, False] for id_,elem in enumerate(detected_list_scale)]
+        
+      
+
+        if len(detected_list_scale) > 0:
+            detected_list[scale] = detected_list_scale 
+            
+
+    detected_list = [elem for elem in detected_list if type(elem) != int]
+    result_box = [detected_list[i][j] for i in xrange(len(detected_list)) for j in xrange(len(detected_list[i]))]
+    
+    return result_box
