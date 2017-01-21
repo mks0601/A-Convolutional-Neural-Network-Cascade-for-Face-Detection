@@ -4,27 +4,31 @@ http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutio
 
 ##Start
 ###training classification net
+```
 12-net: python train_12net.py
 
 24-net: python train_24net.py
 
 48-net: python train_48net.py
-
+```
 ###training calibration net
+```
 12-calib net: python train_calib.py 12
 
 24-calib net: python train_calib.py 24
 
 48-calib net: python train_calib.py 48
-
+```
 ###hard negative mining(save hard neg db to disk in neg_train/neg_hard/)
+```
 hard neg db to train 24-net: python hard_neg_mining.py 24
 
 hard neg db to train 48-net: python hard_neg_mining.py 48
-
+```
 ###test
+```
 python test.py
-
+```
 
 ##Implementation
 Implemented with TensorFlow and yields similar result with paper
