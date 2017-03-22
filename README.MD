@@ -1,9 +1,9 @@
-#A Convolutional Neural Network Cascade for Face Detection
+# A Convolutional Neural Network Cascade for Face Detection
 
 http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutional_Neural_2015_CVPR_paper.pdf
 
-##Start
-###training classification net
+## Start
+### training classification net
 ```
 12-net: python train_12net.py
 
@@ -11,7 +11,7 @@ http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutio
 
 48-net: python train_48net.py
 ```
-###training calibration net
+### training calibration net
 ```
 12-calib net: python train_calib.py 12
 
@@ -19,18 +19,18 @@ http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutio
 
 48-calib net: python train_calib.py 48
 ```
-###hard negative mining(save hard neg db to disk in neg_train/neg_hard/)
+### hard negative mining(save hard neg db to disk in neg_train/neg_hard/)
 ```
 hard neg db to train 24-net: python hard_neg_mining.py 24
 
 hard neg db to train 48-net: python hard_neg_mining.py 48
 ```
-###test
+### test
 ```
 python test.py
 ```
 
-##Implementation
+## Implementation
 Implemented with TensorFlow and yields similar result with paper
 
 training set: AFLW dataset(positive), COCO dataset(negative)
@@ -38,7 +38,7 @@ training set: AFLW dataset(positive), COCO dataset(negative)
 test set: FDDB dataset
 
 
-##Result(gren: GT, blue: detected face)
+## Result(gren: GT, blue: detected face)
 ![face](https://cloud.githubusercontent.com/assets/13601723/15349050/a8192776-1d0a-11e6-86be-243175c22ba4.png)
 
 ![2](https://cloud.githubusercontent.com/assets/13601723/15348767/4d1d0768-1d08-11e6-99d9-07785c131c4b.png)
