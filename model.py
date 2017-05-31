@@ -32,7 +32,7 @@ class detect_12Net:
             self.h_pool1 =  max_pool(self.h_conv1, 3, 2)
             
             #fully conv layer 1
-            self.w_conv2 = weight_variable([param.img_size_12/2,param.img_size_12/2,16,16],"w2")
+            self.w_conv2 = weight_variable([param.img_size_12//2,param.img_size_12//2,16,16],"w2")
             self.b_conv2 = bias_variable([16],"b2")
             self.h_conv2 = tf.nn.relu(conv2d(self.h_pool1, self.w_conv2, param.window_stride/2, pad="VALID") + self.b_conv2)
 
@@ -69,9 +69,9 @@ class detect_24Net:
             self.h_pool1 =  max_pool(self.h_conv1, 3, 2)
 
             #fc layer 1
-            self.w_fc1 =  weight_variable([param.img_size_24/2 * param.img_size_24/2 * 64, 128],"w2")
+            self.w_fc1 =  weight_variable([param.img_size_24//2 * param.img_size_24//2 * 64, 128],"w2")
             self.b_fc1 =  bias_variable([128],"b2")
-            self.h_pool1_reshaped = tf.reshape(self.h_pool1, [-1, param.img_size_24/2 * param.img_size_24/2 * 64])
+            self.h_pool1_reshaped = tf.reshape(self.h_pool1, [-1, param.img_size_24//2 * param.img_size_24//2 * 64])
             self.h_fc1 = tf.nn.relu(tf.matmul(self.h_pool1_reshaped, self.w_fc1) + self.b_fc1)
 
             #fc layer2
@@ -109,9 +109,9 @@ class detect_48Net:
             self.h_pool2 =  max_pool(self.h_conv2, 3, 2)
 
             #fc layer 1
-            self.w_fc1 =  weight_variable([param.img_size_48/4 * param.img_size_48/4 * 64, 256],"w3")
+            self.w_fc1 =  weight_variable([param.img_size_48//4 * param.img_size_48//4 * 64, 256],"w3")
             self.b_fc1 =  bias_variable([256],"b3")
-            self.h_pool2_reshaped = tf.reshape(self.h_pool2, [-1, param.img_size_48/4 * param.img_size_48/4 * 64])
+            self.h_pool2_reshaped = tf.reshape(self.h_pool2, [-1, param.img_size_48//4 * param.img_size_48//4 * 64])
             self.h_fc1 = tf.nn.relu(tf.matmul(self.h_pool2_reshaped, self.w_fc1) + self.b_fc1)
 
             #fc layer2
@@ -140,9 +140,9 @@ class calib_12Net:
             self.h_pool1 =  max_pool(self.h_conv1, 3, 2)
 
             #fc layer 1
-            self.w_fc1 =  weight_variable([param.img_size_12/2 * param.img_size_12/2 * 16, 128],"w2")
+            self.w_fc1 =  weight_variable([param.img_size_12//2 * param.img_size_12//2 * 16, 128],"w2")
             self.b_fc1 =  bias_variable([128],"b2")
-            self.h_pool1_reshaped = tf.reshape(self.h_pool1, [-1, param.img_size_12/2 * param.img_size_12/2 * 16])
+            self.h_pool1_reshaped = tf.reshape(self.h_pool1, [-1, param.img_size_12//2 * param.img_size_12//2 * 16])
             self.h_fc1 = tf.nn.relu(tf.matmul(self.h_pool1_reshaped, self.w_fc1) + self.b_fc1)
 
             #fc layer2
@@ -170,9 +170,9 @@ class calib_24Net:
             self.h_pool1 =  max_pool(self.h_conv1, 3, 2)
 
             #fc layer 1
-            self.w_fc1 =  weight_variable([param.img_size_24/2 * param.img_size_24/2 * 32, 64],"w2")
+            self.w_fc1 =  weight_variable([param.img_size_24//2 * param.img_size_24//2 * 32, 64],"w2")
             self.b_fc1 =  bias_variable([64],"b2")
-            self.h_pool1_reshaped = tf.reshape(self.h_pool1, [-1, param.img_size_24/2 * param.img_size_24/2 * 32])
+            self.h_pool1_reshaped = tf.reshape(self.h_pool1, [-1, param.img_size_24//2 * param.img_size_24//2 * 32])
             self.h_fc1 = tf.nn.relu(tf.matmul(self.h_pool1_reshaped, self.w_fc1) + self.b_fc1)
 
             #fc layer2
@@ -205,9 +205,9 @@ class calib_48Net:
             self.h_conv2 = tf.nn.relu(conv2d(self.h_pool1, self.w_conv2, 1) + self.b_conv2)
 
             #fc layer 1
-            self.w_fc1 =  weight_variable([param.img_size_48/2 * param.img_size_48/2 * 64, 256],"w3")
+            self.w_fc1 =  weight_variable([param.img_size_48//2 * param.img_size_48//2 * 64, 256],"w3")
             self.b_fc1 =  bias_variable([256],"b3")
-            self.h_conv2_reshaped = tf.reshape(self.h_conv2, [-1, param.img_size_48/2 * param.img_size_48/2 * 64])
+            self.h_conv2_reshaped = tf.reshape(self.h_conv2, [-1, param.img_size_48//2 * param.img_size_48//2 * 64])
             self.h_fc1 = tf.nn.relu(tf.matmul(self.h_conv2_reshaped, self.w_fc1) + self.b_fc1)
 
             #fc layer2
