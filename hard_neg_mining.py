@@ -77,7 +77,7 @@ for nid,img_name in enumerate(neg_file_list):
             scale_box.append(box)
         if box[6] != scale_cur or id_ == len(neg_box)-1:
             suppressed += util.NMS(scale_box)
-            scale_cur += 1
+            scale_cur = box[6]
             scale_box = [box]
 
     neg_box = suppressed
@@ -116,7 +116,7 @@ for nid,img_name in enumerate(neg_file_list):
                 scale_box.append(box)
             if box[6] != scale_cur or id_ == len(neg_box)-1:
                 suppressed += util.NMS(scale_box)
-                scale_cur += 1
+                scale_cur = box[6]
                 scale_box = [box]
 
         neg_box = suppressed
