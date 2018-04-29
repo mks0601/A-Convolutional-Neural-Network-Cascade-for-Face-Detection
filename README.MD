@@ -1,9 +1,16 @@
 # A Convolutional Neural Network Cascade for Face Detection
 
-http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutional_Neural_2015_CVPR_paper.pdf
+Re-implementation of this [A Convolutional Neural Network Cascade for Face Detection paper](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutional_Neural_2015_CVPR_paper.pdf)
 
 ## Start
-### training classification net
+### Preparing data
+1. Download AFLW dataset (positive) and COCO dataset (negative) for training. Any other dataset can be used instead of COCO datset for negative one.
+
+2. Download FDDB dataset for testing.
+
+3. Run 'data_parse.py' in the 'dataGen' folder before training and testing network.
+
+### Training classification net
 ```
 12-net: python train_12net.py
 
@@ -11,7 +18,7 @@ http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutio
 
 48-net: python train_48net.py
 ```
-### training calibration net
+### Training calibration net
 ```
 12-calib net: python train_calib.py 12
 
@@ -19,13 +26,13 @@ http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutio
 
 48-calib net: python train_calib.py 48
 ```
-### hard negative mining(save hard neg db to disk in neg_train/neg_hard/)
+### Hard negative mining(save hard neg db to disk in neg_train/neg_hard/)
 ```
 hard neg db to train 24-net: python hard_neg_mining.py 24
 
 hard neg db to train 48-net: python hard_neg_mining.py 48
 ```
-### test
+### Test
 ```
 python test.py
 ```
