@@ -1,6 +1,6 @@
 # A Convolutional Neural Network Cascade for Face Detection
 
-Re-implementation of this [A Convolutional Neural Network Cascade for Face Detection paper](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutional_Neural_2015_CVPR_paper.pdf)
+This repo is re-implementation of the [paper](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Li_A_Convolutional_Neural_2015_CVPR_paper.pdf) in TensorFlow.
 
 ## Start
 ### Preparing data
@@ -8,7 +8,7 @@ Re-implementation of this [A Convolutional Neural Network Cascade for Face Detec
 
 2. Download FDDB dataset for testing.
 
-3. Run 'data_parse.py' in the 'dataGen' folder before training and testing network.
+3. Run `data_parse.py` in the `dataGen` folder before training and testing network.
 
 ### Training classification net
 ```
