@@ -308,7 +308,7 @@ def load_db_test():
 
                 fold_annot_line[it] = [x_min, y_min, x_max, y_max]
 
-
+                it += 1
                 face_num -= 1
                 if face_num == 0:
                     fold_annot.append(fold_annot_line)
